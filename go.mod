@@ -2,4 +2,7 @@ module github.com/takaaki12353491/clean-architecture
 
 go 1.12
 
-require github.com/labstack/echo/v4 v4.1.15 // indirect
+require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/labstack/echo/v4 v4.1.15
+)
