@@ -1,4 +1,4 @@
 package inputdata
 
-type UserInputData struct {
+type User struct {
 }
