@@ -1,4 +1,4 @@
-package data
+package outputdata
 
 type UserOutputData struct {
 }

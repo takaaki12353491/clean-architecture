@@ -1,7 +1,7 @@
-package port
+package inputport
 
-import "cln-arch/usecase/input/data"
+import inputdata "cln-arch/usecase/input/data"
 
 type UserInputPort interface {
-	Create(*data.UserInputData)
+	Create(*inputdata.UserInputData)
 }
