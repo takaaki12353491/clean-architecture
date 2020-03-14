@@ -8,12 +8,18 @@ import (
 )
 
 type UserInteractor struct {
-	userRepository repository.UserRepository
-	outputPort     outputport.UserOutputPort
+	userRepository *repository.UserRepository
+	outputPort     *outputport.UserOutputPort
 }
 
-func NewUserInteractor() inputport.UserInputPort {
-	return &UserInteractor{}
+func NewUserInteractor(
+	userRepository *repository.UserRepository,
+	outputPort *outputport.UserOutputPort,
+) inputport.UserInputPort {
+	return &UserInteractor{
+		userRepository: userRepository,
+		outputPort:     outputPort,
+	}
 }
 
 func (it *UserInteractor) Create(user *inputdata.User) {
