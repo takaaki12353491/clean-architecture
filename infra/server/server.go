@@ -17,7 +17,7 @@ func Start() {
 		middleware.Recover(),
 		func(h echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
-				return h(&Context{c})
+				return h(c.(*handler.Context))
 			}
 		},
 	)
@@ -26,9 +26,9 @@ func Start() {
 
 	auth := e.Group("/auth")
 	github := auth.Group("/github")
-	github.GET("/login", oauthHandler.Login)
-	github.GET("/callback", oauthHandler.Callback)
-	github.GET("/token", oauthHandler.Auth)
+	github.GET("/login", c(oauthHandler.Login))
+	github.GET("/callback", c(oauthHandler.Callback))
+	github.GET("/token", c(oauthHandler.Auth))
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
