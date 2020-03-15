@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cln-arch/infra/router"
+	"cln-arch/infra/server"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -13,5 +13,5 @@ func main() {
 	})
 	log.SetReportCaller(true)
 
-	router.Start()
+	server.Start()
 }
