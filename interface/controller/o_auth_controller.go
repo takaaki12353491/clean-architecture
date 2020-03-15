@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"cln-arch/errs"
 	"cln-arch/interface/gateway/database"
 	"cln-arch/interface/presenter"
 	inputdata "cln-arch/usecase/input/data"
@@ -24,7 +23,7 @@ func NewOAuthController() *OAuthController {
 	}
 }
 
-func (ct *OAuthController) Login(conf *inputdata.ServerConf, session *inputdata.Session) (*outputdata.Login, errs.HTTPError) {
+func (ct *OAuthController) Login(conf *inputdata.ServerConf, session *inputdata.Session) (*outputdata.Login, error) {
 	state := createRand()
 	url := conf.Github.AuthCodeURL(state)
 	expiry := time.Now().Add(10 * time.Minute)
