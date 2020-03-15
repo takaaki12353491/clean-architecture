@@ -2,7 +2,6 @@ package validator
 
 import (
 	"cln-arch/errs"
-	"net/http"
 
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -17,10 +16,10 @@ func NewValidator() *Validator {
 	}
 }
 
-func Validate(i interface{}) errs.HTTPError {
+func Validate(i interface{}) error {
 	err := NewValidator().validator.Struct(i)
 	if err != nil {
-		return errs.NewHTTPError(http.StatusBadRequest, err.Error())
+		return errs.Invalidated.Wrap(err, err.Error())
 	}
 	return nil
 }
