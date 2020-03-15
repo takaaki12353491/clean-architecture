@@ -12,7 +12,7 @@ type OAuthRepository interface {
 	StoreState(state string, sessionID string, expiry *time.Time) error
 	FindBySessionID(string) (string, error)
 	FindBySessionIDAndUserToken(string, string) (*time.Time, int, error)
-	FindByUserTokenID(int) (string, string, string, *time.Time, error)
+	FindByUserTokenID(id int) (*oauth2.Token, error)
 	StoreUserToken(sessionID string, userToken *inputdata.UserToken, id int) (int, error)
 	StoreGithubToken(*oauth2.Token) (int, error)
 }

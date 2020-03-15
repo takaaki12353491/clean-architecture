@@ -1,5 +1,7 @@
 package outputdata
 
+import "golang.org/x/oauth2"
+
 // Login is auth login info
 type Login struct {
 	State string `json:"state"`
@@ -8,4 +10,8 @@ type Login struct {
 
 type Callback struct {
 	Token string
+}
+
+type Auth struct {
+	GithubToken *oauth2.Token
 }

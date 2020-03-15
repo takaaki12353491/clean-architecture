@@ -7,6 +7,7 @@ import (
 	outputdata "cln-arch/usecase/output/data"
 	outputport "cln-arch/usecase/output/port"
 	"cln-arch/usecase/repository"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -58,4 +59,16 @@ func (it *OAuthInteractor) Callback(callback *inputdata.Callback) (*outputdata.C
 		return nil, errs.Forbidden.New("no user session")
 	}
 	return it.outputport.Callback(callback.UserToken.Token), nil
+}
+
+func (it *OAuthInteractor) Auth(auth *inputdata.Auth) (*outputdata.Auth, error) {
+	expiry, id, err := it.oauthRepository.FindBySessionIDAndUserToken(auth.ID, auth.Token)
+	if expiry.After(time.Now()) {
+		return nil, errs.Forbidden.New("user token expiry")
+	}
+	githubToken, err := it.oauthRepository.FindByUserTokenID(id)
+	if err != nil {
+		return nil, err
+	}
+	return it.outputport.Auth(githubToken), nil
 }

@@ -27,8 +27,8 @@ func (db *OAuthDatabase) FindBySessionIDAndUserToken(string, string) (*time.Time
 	return nil, 0, nil
 }
 
-func (db *OAuthDatabase) FindByUserTokenID(int) (string, string, string, *time.Time, error) {
-	return "", "", "", nil, nil
+func (db *OAuthDatabase) FindByUserTokenID(id int) (*oauth2.Token, error) {
+	return nil, nil
 }
 
 func (db *OAuthDatabase) StoreUserToken(sessionID string, userToken *inputdata.UserToken, id int) (int, error) {

@@ -25,6 +25,12 @@ type Callback struct {
 	State     string `json:"state"`
 }
 
+// Auth uses to authenticate user
+type Auth struct {
+	Session
+	Token string `json:"token"`
+}
+
 // Session is recieved from server
 type Session struct {
 	ID string `json:"session_id"`
@@ -34,12 +40,6 @@ type Session struct {
 type UserToken struct {
 	Token  string
 	Expiry time.Time
-}
-
-// Auth uses to authenticate user
-type Auth struct {
-	Session
-	Token string `json:"token"`
 }
 
 // UserForOAuth is user's info
