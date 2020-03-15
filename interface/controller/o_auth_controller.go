@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"cln-arch/config"
 	"cln-arch/interface/gateway/database"
 	"cln-arch/interface/presenter"
 	inputdata "cln-arch/usecase/input/data"
 	inputport "cln-arch/usecase/input/port"
 	"cln-arch/usecase/interactor"
 	outputdata "cln-arch/usecase/output/data"
+	"context"
 	"time"
 )
 
@@ -23,16 +25,43 @@ func NewOAuthController() *OAuthController {
 	}
 }
 
-func (ct *OAuthController) Login(conf *inputdata.ServerConf, session *inputdata.Session) (*outputdata.Login, error) {
+func (ct *OAuthController) Login(session *inputdata.Session) (*outputdata.Login, error) {
 	state := createRand()
-	url := conf.Github.AuthCodeURL(state)
+	serverConf := config.NewServer()
+	url := serverConf.Github.AuthCodeURL(state)
 	expiry := time.Now().Add(10 * time.Minute)
-	oauth := &inputdata.OAuth{
-		ServerConf: conf,
+	login := &inputdata.Login{
+		ServerConf: serverConf,
 		Session:    session,
 		State:      state,
 		URL:        url,
 		Expiry:     &expiry,
 	}
-	return ct.inputport.SetupGithubLogin(oauth)
+	return ct.inputport.Login(login)
+}
+
+func (ct *OAuthController) Callback(ctx context.Context, sessionID string, code string, state string) (*outputdata.Callback, error) {
+	serverConf := config.NewServer()
+	// make github token
+	githubToken, err := serverConf.Github.Exchange(ctx, code)
+	if err != nil {
+		return nil, err
+	}
+	session := inputdata.Session{
+		ID: sessionID,
+	}
+	// make user token
+	userToken := &inputdata.UserToken{
+		Token:  createRand(),
+		Expiry: time.Now().Add(7 * 24 * time.Hour),
+	}
+	callback := &inputdata.Callback{
+		ServerConf:  serverConf,
+		GithubToken: githubToken,
+		Session:     session,
+		UserToken:   userToken,
+		Code:        code,
+		State:       state,
+	}
+	return ct.inputport.Callback(callback)
 }

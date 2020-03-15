@@ -1,7 +1,10 @@
 package repository
 
 import (
+	inputdata "cln-arch/usecase/input/data"
 	"time"
+
+	"golang.org/x/oauth2"
 )
 
 // OAuthRepository is ...
@@ -10,6 +13,6 @@ type OAuthRepository interface {
 	FindBySessionID(string) (string, error)
 	FindBySessionIDAndUserToken(string, string) (*time.Time, int, error)
 	FindByUserTokenID(int) (string, string, string, *time.Time, error)
-	StoreUserToken(string, string, *time.Time, int) (int, error)
-	StoreGithubToken(string, string, string, *time.Time) (int, error)
+	StoreUserToken(sessionID string, userToken *inputdata.UserToken, id int) (int, error)
+	StoreGithubToken(*oauth2.Token) (int, error)
 }

@@ -1,29 +1,28 @@
 package inputdata
 
 import (
+	"cln-arch/config"
 	"time"
 
 	"golang.org/x/oauth2"
 )
 
-type OAuth struct {
-	ServerConf *ServerConf
+type Login struct {
+	ServerConf *config.ServerConf
 	Session    *Session
 	State      string
 	URL        string
 	Expiry     *time.Time
 }
 
-// DBConf is config using DB
-type DBConf struct {
-	Database string
-	DSN      string
-}
-
-// ServerConf is above all
-type ServerConf struct {
-	DBConf DBConf
-	Github oauth2.Config
+// Callback is callback param after github login
+type Callback struct {
+	ServerConf  *config.ServerConf
+	GithubToken *oauth2.Token
+	Session
+	UserToken *UserToken
+	Code      string `json:"code"`
+	State     string `json:"state"`
 }
 
 // Session is recieved from server
@@ -31,11 +30,10 @@ type Session struct {
 	ID string `json:"session_id"`
 }
 
-// Callback is callback param after github login
-type Callback struct {
-	Session
-	Code  string `json:"code"`
-	State string `json:"state"`
+// UserToken
+type UserToken struct {
+	Token  string
+	Expiry time.Time
 }
 
 // Auth uses to authenticate user
@@ -47,9 +45,4 @@ type Auth struct {
 // UserForOAuth is user's info
 type UserForOAuth struct {
 	Token string `json:"token"`
-}
-
-// GithubToken is github token
-type GithubToken struct {
-	oauth2.Token
 }

@@ -18,3 +18,9 @@ func (pre *OAuthPresenter) Login(state string, url string) *outputdata.Login {
 		URL:   url,
 	}
 }
+
+func (pre *OAuthPresenter) Callback(token string) *outputdata.Callback {
+	return &outputdata.Callback{
+		Token: token,
+	}
+}

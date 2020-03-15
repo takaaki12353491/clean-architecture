@@ -1,8 +1,12 @@
 package database
 
 import (
-	"cln-arch/usecase/repository"
 	"time"
+
+	"golang.org/x/oauth2"
+
+	inputdata "cln-arch/usecase/input/data"
+	"cln-arch/usecase/repository"
 )
 
 type OAuthDatabase struct {
@@ -28,10 +32,10 @@ func (db *OAuthDatabase) FindByUserTokenID(int) (string, string, string, *time.T
 	return "", "", "", nil, nil
 }
 
-func (db *OAuthDatabase) StoreUserToken(string, string, *time.Time, int) (int, error) {
+func (db *OAuthDatabase) StoreUserToken(sessionID string, userToken *inputdata.UserToken, id int) (int, error) {
 	return 0, nil
 }
 
-func (db *OAuthDatabase) StoreGithubToken(string, string, string, *time.Time) (int, error) {
+func (db *OAuthDatabase) StoreGithubToken(githubToken *oauth2.Token) (int, error) {
 	return 0, nil
 }

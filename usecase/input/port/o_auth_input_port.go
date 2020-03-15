@@ -6,5 +6,6 @@ import (
 )
 
 type OAuthInputPort interface {
-	SetupGithubLogin(oauth *inputdata.OAuth) (*outputdata.Login, error)
+	Login(oauth *inputdata.Login) (*outputdata.Login, error)
+	Callback(callback *inputdata.Callback) (*outputdata.Callback, error)
 }
