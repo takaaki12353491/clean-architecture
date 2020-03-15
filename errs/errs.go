@@ -3,8 +3,6 @@
 package errs
 
 import (
-	"net/http"
-
 	"github.com/pkg/errors"
 )
 
@@ -31,7 +29,6 @@ type customError struct {
 
 // New 指定したErrorTypeを持つcustomErrorを返す
 func (et ErrorType) New(message string) error {
-	a := http.StatusInternalServerError
 	return customError{errorType: et, originalError: errors.New(message)}
 }
 
