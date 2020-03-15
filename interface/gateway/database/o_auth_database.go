@@ -1,12 +1,11 @@
 package database
 
 import (
+	inputdata "cln-arch/usecase/input/data"
+	"cln-arch/usecase/repository"
 	"time"
 
 	"golang.org/x/oauth2"
-
-	inputdata "cln-arch/usecase/input/data"
-	"cln-arch/usecase/repository"
 )
 
 type OAuthDatabase struct {

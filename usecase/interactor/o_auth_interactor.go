@@ -1,14 +1,14 @@
 package interactor
 
 import (
-	log "github.com/sirupsen/logrus"
-
 	"cln-arch/errs"
 	inputdata "cln-arch/usecase/input/data"
 	inputport "cln-arch/usecase/input/port"
 	outputdata "cln-arch/usecase/output/data"
 	outputport "cln-arch/usecase/output/port"
 	"cln-arch/usecase/repository"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // OAuthInteractor is ...
