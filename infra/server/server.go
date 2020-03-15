@@ -12,8 +12,15 @@ func Start() {
 	e := echo.New()
 
 	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	e.Use(
+		middleware.Logger(),
+		middleware.Recover(),
+		func(h echo.HandlerFunc) echo.HandlerFunc {
+			return func(c echo.Context) error {
+				return h(&Context{c})
+			}
+		},
+	)
 
 	oauthHandler := handler.NewOAuthHandler()
 
