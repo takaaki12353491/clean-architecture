@@ -17,11 +17,12 @@ func Start() {
 		middleware.Recover(),
 		func(h echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
-				return h(c.(*handler.Context))
+				return h(&handler.Context{c})
 			}
 		},
 	)
 
+	// Handlers
 	oauthHandler := handler.NewOAuthHandler()
 
 	auth := e.Group("/auth")
