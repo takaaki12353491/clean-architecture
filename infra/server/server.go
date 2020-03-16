@@ -17,7 +17,9 @@ func Start() {
 		middleware.Recover(),
 		func(h echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
-				return h(&handler.Context{c})
+				return h(&handler.Context{
+					Context: c,
+				})
 			}
 		},
 	)
