@@ -11,8 +11,9 @@ type ErrorType uint
 const (
 	Unknown ErrorType = iota
 	Invalidated
-	NotFound
 	Forbidden
+	NotFound
+	Conflict
 	Failed
 )
 
