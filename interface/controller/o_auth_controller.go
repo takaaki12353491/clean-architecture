@@ -31,37 +31,33 @@ func (ct *OAuthController) Login(session *inputdata.Session) (*outputdata.Login,
 	url := serverConf.Github.AuthCodeURL(state)
 	expiry := time.Now().Add(10 * time.Minute)
 	login := &inputdata.Login{
-		ServerConf: serverConf,
-		Session:    session,
-		State:      state,
-		URL:        url,
-		Expiry:     &expiry,
+		State: state,
+		URL:   url,
 	}
-	return ct.inputport.Login(login)
+	return ct.inputport.Login(login, session, &expiry)
 }
 
-func (ct *OAuthController) Callback(ctx context.Context, sessionID string, code string, state string) (*outputdata.Callback, error) {
+func (ct *OAuthController) Callback(callback *inputdata.Callback) (*outputdata.Callback, error) {
 	serverConf := config.NewServer()
 	// make github token
-	githubToken, err := serverConf.Github.Exchange(ctx, code)
+	token, err := serverConf.Github.Exchange(context.Background(), callback.Code)
 	if err != nil {
 		return nil, err
 	}
-	session := inputdata.Session{
-		ID: sessionID,
-	}
+	githubToken := &inputdata.GithubToken{Token: token}
 	// make user token
+	expiry := time.Now().Add(7 * 24 * time.Hour)
 	userToken := &inputdata.UserToken{
 		Token:  createRand(),
-		Expiry: time.Now().Add(7 * 24 * time.Hour),
+		Expiry: &expiry,
 	}
-	callback := &inputdata.Callback{
-		ServerConf:  serverConf,
-		GithubToken: githubToken,
-		Session:     session,
-		UserToken:   userToken,
-		Code:        code,
-		State:       state,
+	return ct.inputport.Callback(callback, githubToken, userToken)
+}
+
+func (ct *OAuthController) Auth(_auth *inputdata.Auth) (*outputdata.Auth, error) {
+	auth, err := ct.inputport.Auth(_auth)
+	if err != nil {
+		return nil, err
 	}
-	return ct.inputport.Callback(callback)
+	return auth, nil
 }

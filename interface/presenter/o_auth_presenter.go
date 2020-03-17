@@ -1,10 +1,9 @@
 package presenter
 
 import (
+	"cln-arch/domain/model"
 	outputdata "cln-arch/usecase/output/data"
 	outputport "cln-arch/usecase/output/port"
-
-	"golang.org/x/oauth2"
 )
 
 type OAuthPresenter struct {
@@ -21,14 +20,14 @@ func (pre *OAuthPresenter) Login(state string, url string) *outputdata.Login {
 	}
 }
 
-func (pre *OAuthPresenter) Callback(token string) *outputdata.Callback {
+func (pre *OAuthPresenter) Callback(userToken *model.UserToken) *outputdata.Callback {
 	return &outputdata.Callback{
-		Token: token,
+		Token: userToken.Token,
 	}
 }
 
-func (pre *OAuthPresenter) Auth(githubToken *oauth2.Token) *outputdata.Auth {
+func (pre *OAuthPresenter) Auth(githubToken *model.GithubToken) *outputdata.Auth {
 	return &outputdata.Auth{
-		GithubToken: githubToken,
+		GithubToken: githubToken.Token,
 	}
 }
