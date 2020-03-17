@@ -7,6 +7,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/protobuf v1.3.5 // indirect
+	github.com/google/uuid v1.1.1 // indirect
 	github.com/jinzhu/gorm v1.9.12 // indirect
 	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/labstack/echo/v4 v4.1.15
