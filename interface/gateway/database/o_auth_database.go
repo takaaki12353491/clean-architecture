@@ -7,6 +7,7 @@ import (
 )
 
 type OAuthDatabase struct {
+	SQLHandler
 }
 
 func NewOAuthDatabase() repository.OAuthRepository {
