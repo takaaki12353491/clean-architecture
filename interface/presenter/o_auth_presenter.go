@@ -13,10 +13,10 @@ func NewOAuthPresenter() outputport.OAuthOutputPort {
 	return &OAuthPresenter{}
 }
 
-func (pre *OAuthPresenter) Login(state string, url string) *outputdata.Login {
+func (pre *OAuthPresenter) Login(login *model.Login) *outputdata.Login {
 	return &outputdata.Login{
-		State: state,
-		URL:   url,
+		State: login.State,
+		URL:   login.URL,
 	}
 }
 
@@ -26,8 +26,8 @@ func (pre *OAuthPresenter) Callback(userToken *model.UserToken) *outputdata.Call
 	}
 }
 
-func (pre *OAuthPresenter) Auth(githubToken *model.GithubToken) *outputdata.Auth {
+func (pre *OAuthPresenter) Auth(oauthToken *model.OAuthToken) *outputdata.Auth {
 	return &outputdata.Auth{
-		GithubToken: githubToken.Token,
+		OAuthToken: oauthToken.Token,
 	}
 }
