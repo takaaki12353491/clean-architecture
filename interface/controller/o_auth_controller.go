@@ -10,6 +10,9 @@ import (
 	outputdata "cln-arch/usecase/output/data"
 	"context"
 	"time"
+
+	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 type OAuthController struct {
@@ -25,39 +28,40 @@ func NewOAuthController() *OAuthController {
 	}
 }
 
-func (ct *OAuthController) Login(session *inputdata.Session) (*outputdata.Login, error) {
+func (ct *OAuthController) Login(iSession *inputdata.Session) (*outputdata.Login, error) {
+	userID := uuid.New().String()
 	state := createRand()
 	serverConf := config.NewServer()
 	url := serverConf.Github.AuthCodeURL(state)
 	expiry := time.Now().Add(10 * time.Minute)
-	login := &inputdata.Login{
-		State: state,
-		URL:   url,
+	iLogin := &inputdata.Login{
+		UserID:  userID,
+		State:   state,
+		URL:     url,
+		Session: iSession,
+		Expiry:  &expiry,
 	}
-	return ct.inputport.Login(login, session, &expiry)
+	return ct.inputport.Login(iLogin)
 }
 
-func (ct *OAuthController) Callback(callback *inputdata.Callback) (*outputdata.Callback, error) {
+func (ct *OAuthController) Callback(iCallbackRequest *inputdata.CallbackRequest) (*outputdata.Callback, error) {
 	serverConf := config.NewServer()
-	// make github token
-	token, err := serverConf.Github.Exchange(context.Background(), callback.Code)
+	oauthToken, err := serverConf.Github.Exchange(context.Background(), iCallbackRequest.Code)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
-	githubToken := &inputdata.GithubToken{Token: token}
-	// make user token
+	token := createRand()
 	expiry := time.Now().Add(7 * 24 * time.Hour)
-	userToken := &inputdata.UserToken{
-		Token:  createRand(),
-		Expiry: &expiry,
+	iCallback := &inputdata.Callback{
+		Request:    iCallbackRequest,
+		OAuthToken: oauthToken,
+		Token:      token,
+		Expiry:     &expiry,
 	}
-	return ct.inputport.Callback(callback, githubToken, userToken)
+	return ct.inputport.Callback(iCallback)
 }
 
-func (ct *OAuthController) Auth(_auth *inputdata.Auth) (*outputdata.Auth, error) {
-	auth, err := ct.inputport.Auth(_auth)
-	if err != nil {
-		return nil, err
-	}
-	return auth, nil
+func (ct *OAuthController) Auth(iAuth *inputdata.Auth) (*outputdata.Auth, error) {
+	return ct.inputport.Auth(iAuth)
 }
