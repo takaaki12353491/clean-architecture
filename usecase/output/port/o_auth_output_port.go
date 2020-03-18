@@ -6,7 +6,7 @@ import (
 )
 
 type OAuthOutputPort interface {
-	Login(state string, url string) *outputdata.Login
-	Callback(userToken *model.UserToken) *outputdata.Callback
-	Auth(githubToken *model.GithubToken) *outputdata.Auth
+	Login(*model.Login) *outputdata.Login
+	Callback(*model.UserToken) *outputdata.Callback
+	Auth(*model.OAuthToken) *outputdata.Auth
 }
