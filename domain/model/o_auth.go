@@ -1,54 +1,88 @@
 package model
 
 import (
+	"cln-arch/validator"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
-// DBConf is config using DB
-type DBConf struct {
-	Database string
-	DSN      string
-}
-
-// ServerConf is above all
-type ServerConf struct {
-	DBConf DBConf
-	Github oauth2.Config
-}
-
-// Session is recieved from server
-type Session struct {
-	ID string `json:"session_id"`
-}
-
-// Login is auth login info
 type Login struct {
-	State string `json:"state"`
-	URL   string `json:"redirect_url"`
+	State string
+	URL   string
 }
 
-// Callback is callback param after github login
-type Callback struct {
-	Session *Session
-	Code    string `json:"code"`
-	State   string `json:"state"`
+func NewLogin(state string, url string) (*Login, error) {
+	login := &Login{
+		State: state,
+		URL:   url,
+	}
+	err := validator.Validate(login)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return login, nil
 }
 
-// Auth uses to authenticate user
-type Auth struct {
-	Session *Session
-	Token   string `json:"token"`
+type UserState struct {
+	UserID    string
+	SessionID string
+	State     string
+	Expiry    *time.Time
 }
 
-// User is user's info
+func NewUserState(userID string, sessionID string, state string, expiry *time.Time) (*UserState, error) {
+	userState := &UserState{
+		UserID:    userID,
+		SessionID: sessionID,
+		State:     state,
+		Expiry:    expiry,
+	}
+	err := validator.Validate(userState)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return userState, nil
+}
+
 type UserToken struct {
-	Token  string `json:"token"`
+	UserID string
+	Token  string
 	Expiry *time.Time
 }
 
-// GithubToken is github token
-type GithubToken struct {
-	Token *oauth2.Token
+func NewUserToken(userID string, token string, expiry *time.Time) (*UserToken, error) {
+	userToken := &UserToken{
+		UserID: userID,
+		Token:  token,
+		Expiry: expiry,
+	}
+	err := validator.Validate(userToken)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return userToken, nil
+}
+
+// OAuthToken is oauth token
+type OAuthToken struct {
+	UserID string
+	Token  *oauth2.Token
+}
+
+func NewOAuthToken(userID string, token *oauth2.Token) (*OAuthToken, error) {
+	oauthToken := &OAuthToken{
+		UserID: userID,
+		Token:  token,
+	}
+	err := validator.Validate(oauthToken)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return oauthToken, nil
 }
