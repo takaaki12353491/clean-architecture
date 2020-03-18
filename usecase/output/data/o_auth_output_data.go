@@ -13,5 +13,5 @@ type Callback struct {
 }
 
 type Auth struct {
-	GithubToken *oauth2.Token
+	OAuthToken *oauth2.Token
 }
