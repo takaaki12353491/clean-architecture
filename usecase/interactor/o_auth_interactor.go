@@ -30,50 +30,70 @@ func NewOAuthInteractor(
 }
 
 // Login is ...
-func (it *OAuthInteractor) Login(login *inputdata.Login, _session *inputdata.Session, expiry *time.Time) (*outputdata.Login, error) {
-	session := &model.Session{ID: _session.ID}
-	err := it.oauthRepository.StoreState(login.State, session, expiry)
+func (it *OAuthInteractor) Login(iLogin *inputdata.Login) (*outputdata.Login, error) {
+	userState, err := model.NewUserState(iLogin.UserID, iLogin.Session.ID, iLogin.State, iLogin.Expiry)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	return it.outputport.Login(login.State, login.URL), nil
+	login, err := model.NewLogin(iLogin.State, iLogin.URL)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	err = it.oauthRepository.StoreUserState(userState)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return it.outputport.Login(login), nil
 }
 
-func (it *OAuthInteractor) Callback(callback *inputdata.Callback, _githubToken *inputdata.GithubToken, _userToken *inputdata.UserToken) (*outputdata.Callback, error) {
-	session := &model.Session{ID: callback.Session.ID}
-	githubToken := &model.GithubToken{Token: _githubToken.Token}
-	userToken := &model.UserToken{Token: _userToken.Token, Expiry: _userToken.Expiry}
+func (it *OAuthInteractor) Callback(iCallback *inputdata.Callback) (*outputdata.Callback, error) {
 	// recieved state is expected or not
-	state, err := it.oauthRepository.FindStateBySession(session)
+	userState, err := it.oauthRepository.FindUserStateBySessionID(iCallback.Request.Session.ID)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
-	if state != callback.State {
-		return nil, errs.Forbidden.New("not match state")
+	if userState.State != iCallback.Request.State {
+		errMsg := "not match state"
+		log.Error(errMsg)
+		return nil, errs.Forbidden.New(errMsg)
 	}
-	id, err := it.oauthRepository.StoreGithubToken(githubToken)
+	oauthToken, err := model.NewOAuthToken(userState.UserID, iCallback.OAuthToken)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
-	count, err := it.oauthRepository.StoreUserToken(session, userToken, id)
+	err = it.oauthRepository.StoreOAuthToken(oauthToken)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
-	if count == 0 {
-		return nil, errs.Forbidden.New("no user session")
+	userToken, err := model.NewUserToken(userState.UserID, iCallback.Token, iCallback.Expiry)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	err = it.oauthRepository.StoreUserToken(userToken)
+	if err != nil {
+		return nil, err
 	}
 	return it.outputport.Callback(userToken), nil
 }
 
-func (it *OAuthInteractor) Auth(auth *inputdata.Auth) (*outputdata.Auth, error) {
-	expiry, id, err := it.oauthRepository.FindBySessionIDAndUserToken(auth.Session.ID, auth.Token)
-	if expiry.After(time.Now()) {
-		return nil, errs.Forbidden.New("user token expiry")
+func (it *OAuthInteractor) Auth(iAuth *inputdata.Auth) (*outputdata.Auth, error) {
+	userState, err := it.oauthRepository.FindUserStateBySessionIDAndUserToken(iAuth.Session.ID, iAuth.Token)
+	if userState.Expiry.After(time.Now()) {
+		errMsg := "user token expiry"
+		log.Error(errMsg)
+		return nil, errs.Forbidden.New(errMsg)
 	}
-	githubToken, err := it.oauthRepository.FindByUserTokenID(id)
+	oauthToken, err := it.oauthRepository.FindOAuthTokenByUserID(userState.UserID)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
-	return it.outputport.Auth(githubToken), nil
+	return it.outputport.Auth(oauthToken), nil
 }
