@@ -5,7 +5,7 @@ import (
 	inputdata "cln-arch/usecase/input/data"
 	"net/http"
 
-	"github.com/labstack/gommon/log"
+	log "github.com/sirupsen/logrus"
 )
 
 type OAuthHandler struct {
@@ -23,13 +23,14 @@ func (h *OAuthHandler) Login(c *Context) error {
 	if err != nil {
 		log.Error(err)
 		c.String(statusCode(err), err.Error())
+		return err
 	}
 	c.Response().Header().Set("Location", login.URL)
 	return c.JSON(http.StatusTemporaryRedirect, login)
 }
 
 func (h *OAuthHandler) Callback(c *Context) error {
-	callback := &inputdata.Callback{}
+	callback := &inputdata.CallbackRequest{}
 	c.Bind(callback)
 	info, err := h.controller.Callback(callback)
 	if err != nil {
