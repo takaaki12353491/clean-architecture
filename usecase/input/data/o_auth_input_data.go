@@ -6,18 +6,6 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// DBConf is config using DB
-type DBConf struct {
-	Database string
-	DSN      string
-}
-
-// ServerConf is above all
-type ServerConf struct {
-	DBConf DBConf
-	Github oauth2.Config
-}
-
 // Session is recieved from server
 type Session struct {
 	ID string `json:"session_id"`
@@ -25,12 +13,22 @@ type Session struct {
 
 // Login is auth login info
 type Login struct {
-	State string `json:"state"`
-	URL   string `json:"redirect_url"`
+	UserID  string
+	State   string `json:"state"`
+	URL     string `json:"redirect_url"`
+	Session *Session
+	Expiry  *time.Time
 }
 
-// Callback is callback param after github login
 type Callback struct {
+	Request    *CallbackRequest
+	OAuthToken *oauth2.Token
+	Token      string
+	Expiry     *time.Time
+}
+
+// CallbackRequest is callback param after github login
+type CallbackRequest struct {
 	Session *Session
 	Code    string `json:"code"`
 	State   string `json:"state"`
@@ -46,9 +44,4 @@ type Auth struct {
 type UserToken struct {
 	Token  string `json:"token"`
 	Expiry *time.Time
-}
-
-// GithubToken is github token
-type GithubToken struct {
-	Token *oauth2.Token
 }
