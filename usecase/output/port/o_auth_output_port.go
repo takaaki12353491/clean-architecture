@@ -6,7 +6,6 @@ import (
 )
 
 type OAuthOutputPort interface {
-	Login(*model.Login) *outputdata.Login
-	Callback(*model.UserToken) *outputdata.Callback
-	Auth(*model.OAuthToken) *outputdata.Auth
+	Auth(*model.OAuthState) *outputdata.Auth
+	Callback(*model.OAuthToken) *outputdata.Callback
 }

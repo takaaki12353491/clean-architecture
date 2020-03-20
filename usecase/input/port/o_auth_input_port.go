@@ -6,7 +6,6 @@ import (
 )
 
 type OAuthInputPort interface {
-	Login(*inputdata.Login) (*outputdata.Login, error)
+	Auth() (*outputdata.Auth, error)
 	Callback(*inputdata.Callback) (*outputdata.Callback, error)
-	Auth(auth *inputdata.Auth) (*outputdata.Auth, error)
 }

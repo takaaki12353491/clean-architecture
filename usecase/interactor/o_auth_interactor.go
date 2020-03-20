@@ -29,71 +29,46 @@ func NewOAuthInteractor(
 	}
 }
 
-// Login is ...
-func (it *OAuthInteractor) Login(iLogin *inputdata.Login) (*outputdata.Login, error) {
-	userState, err := model.NewUserState(iLogin.UserID, iLogin.Session.ID, iLogin.State, iLogin.Expiry)
+// Auth is ...
+func (it *OAuthInteractor) Auth() (*outputdata.Auth, error) {
+	state, err := model.NewOAuthState()
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	login, err := model.NewLogin(iLogin.State, iLogin.URL)
+	err = it.oauthRepository.StoreState(state)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	err = it.oauthRepository.StoreUserState(userState)
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-	return it.outputport.Login(login), nil
+	return it.outputport.Auth(state), nil
 }
 
 func (it *OAuthInteractor) Callback(iCallback *inputdata.Callback) (*outputdata.Callback, error) {
-	// recieved state is expected or not
-	userState, err := it.oauthRepository.FindUserStateBySessionID(iCallback.Request.Session.ID)
+	state, err := it.oauthRepository.FindStateByState(iCallback.Request.State)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	if userState.State != iCallback.Request.State {
-		errMsg := "not match state"
+	if state.Expiry.After(time.Now()) {
+		errMsg := "state is expiry"
 		log.Error(errMsg)
 		return nil, errs.Forbidden.New(errMsg)
 	}
-	oauthToken, err := model.NewOAuthToken(userState.UserID, iCallback.OAuthToken)
+	user, err := model.NewUser()
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	err = it.oauthRepository.StoreOAuthToken(oauthToken)
+	token, err := model.NewOAuthToken(user, iCallback.OAuthToken)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	userToken, err := model.NewUserToken(userState.UserID, iCallback.Token, iCallback.Expiry)
+	err = it.oauthRepository.StoreToken(token)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	err = it.oauthRepository.StoreUserToken(userToken)
-	if err != nil {
-		return nil, err
-	}
-	return it.outputport.Callback(userToken), nil
-}
-
-func (it *OAuthInteractor) Auth(iAuth *inputdata.Auth) (*outputdata.Auth, error) {
-	userState, err := it.oauthRepository.FindUserStateBySessionIDAndUserToken(iAuth.Session.ID, iAuth.Token)
-	if userState.Expiry.After(time.Now()) {
-		errMsg := "user token expiry"
-		log.Error(errMsg)
-		return nil, errs.Forbidden.New(errMsg)
-	}
-	oauthToken, err := it.oauthRepository.FindOAuthTokenByUserID(userState.UserID)
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-	return it.outputport.Auth(oauthToken), nil
+	return it.outputport.Callback(token), nil
 }

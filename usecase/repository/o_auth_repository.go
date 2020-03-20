@@ -6,10 +6,9 @@ import (
 
 // OAuthRepository is ...
 type OAuthRepository interface {
-	FindUserStateBySessionID(string) (*model.UserState, error)
-	FindUserStateBySessionIDAndUserToken(sessionID string, token string) (*model.UserState, error)
-	FindOAuthTokenByUserID(string) (*model.OAuthToken, error)
-	StoreUserState(*model.UserState) error
-	StoreOAuthToken(*model.OAuthToken) error
-	StoreUserToken(*model.UserToken) error
+	FindUserByToken(string) (*model.User, error)
+	FindStateByState(string) (*model.OAuthState, error)
+	FindTokenByToken(string) (*model.OAuthToken, error)
+	StoreState(*model.OAuthState) error
+	StoreToken(*model.OAuthToken) error
 }
