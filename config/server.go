@@ -12,7 +12,7 @@ func NewGithubConf() *oauth2.Config {
 	return &oauth2.Config{
 		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
-		RedirectURL:  os.Getenv("SERVER_HOST"),
+		RedirectURL:  "http://localhost:8080/auth/github/callback",
 		Scopes:       scopes,
 		Endpoint:     oauth2github.Endpoint,
 	}
