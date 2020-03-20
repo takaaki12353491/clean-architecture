@@ -13,21 +13,24 @@ func NewOAuthDatabase() repository.OAuthRepository {
 	return &OAuthDatabase{}
 }
 
-func (db *OAuthDatabase) FindUserStateBySessionID(string) (*model.UserState, error) {
-	return nil, nil
+func (db *OAuthDatabase) FindStateByState(state string) (*model.OAuthState, error) {
+	oauthState := &model.OAuthState{}
+	db.First(oauthState, "state = ?", state)
+	return oauthState, nil
 }
-func (db *OAuthDatabase) FindUserStateBySessionIDAndUserToken(sessionID string, token string) (*model.UserState, error) {
-	return nil, nil
+
+func (db *OAuthDatabase) FindTokenByToken(token string) (*model.OAuthToken, error) {
+	oauthToken := &model.OAuthToken{}
+	db.First(oauthToken, "access_token = ?", token)
+	return oauthToken, nil
 }
-func (db *OAuthDatabase) FindOAuthTokenByUserID(string) (*model.OAuthToken, error) {
-	return nil, nil
-}
-func (db *OAuthDatabase) StoreUserState(*model.UserState) error {
+
+func (db *OAuthDatabase) StoreState(state *model.OAuthState) error {
+	db.Create(state)
 	return nil
 }
-func (db *OAuthDatabase) StoreOAuthToken(*model.OAuthToken) error {
-	return nil
-}
-func (db *OAuthDatabase) StoreUserToken(*model.UserToken) error {
+
+func (db *OAuthDatabase) StoreToken(token *model.OAuthToken) error {
+	db.Create(token)
 	return nil
 }

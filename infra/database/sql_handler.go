@@ -1,21 +1,24 @@
 package database
 
-// SQLHandler ...
-type SQLHandler interface {
-	Exec(string, ...interface{}) (Result, error)
-	Query(string, ...interface{}) (Row, error)
-	Transaction(f func() (interface{}, error)) (interface{}, error)
+import (
+	"github.com/jinzhu/gorm"
+	log "github.com/sirupsen/logrus"
+)
+
+type SQLHandler struct {
+	*gorm.DB
 }
 
-// Result ...
-type Result interface {
-	LastInsertId() (int64, error)
-	RowsAffected() (int64, error)
-}
-
-// Row ...
-type Row interface {
-	Scan(...interface{}) error
-	Next() bool
-	Close() error
+func NewSQLHandler() *SQLHandler {
+	DBMS := "mysql"
+	USER := "root"
+	PASS := "####"
+	PROTOCOL := "tcp(##.###.##.###:3306)"
+	DBNAME := "##"
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
+	db, err := gorm.Open(DBMS, CONNECT)
+	if err != nil {
+		log.Panicln(err)
+	}
+	return &SQLHandler{DB: db}
 }
