@@ -25,6 +25,6 @@ func (pre *OAuthPresenter) Auth(state *model.OAuthState) *outputdata.Auth {
 
 func (pre *OAuthPresenter) Callback(token *model.OAuthToken) *outputdata.Callback {
 	return &outputdata.Callback{
-		Token: token.Token.AccessToken,
+		Token: token.AccessToken,
 	}
 }

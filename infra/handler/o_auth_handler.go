@@ -16,10 +16,8 @@ func NewOAuthHandler() *OAuthHandler {
 	return &OAuthHandler{}
 }
 
-func (h *OAuthHandler) Login(c *Context) error {
-	session := &inputdata.Session{}
-	c.Bind(session)
-	login, err := h.controller.Login(session)
+func (h *OAuthHandler) Auth(c *Context) error {
+	login, err := h.controller.Auth()
 	if err != nil {
 		log.Error(err)
 		c.String(statusCode(err), err.Error())
@@ -38,15 +36,4 @@ func (h *OAuthHandler) Callback(c *Context) error {
 		return err
 	}
 	return c.JSON(http.StatusOK, info)
-}
-
-func (h *OAuthHandler) Auth(c *Context) error {
-	auth := &inputdata.Auth{}
-	c.Bind(auth)
-	token, err := h.controller.Auth(auth)
-	if err != nil {
-		c.String(statusCode(err), err.Error())
-		return err
-	}
-	return c.JSON(http.StatusOK, token)
 }
