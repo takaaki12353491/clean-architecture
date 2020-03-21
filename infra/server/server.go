@@ -41,28 +41,8 @@ func Start() {
 }
 
 func logFormat() string {
-	// Refer to https://github.com/tkuchiki/alp
-	var format string
-	strings.Join([]string{
-		"time:${time_rfc3339},\n",
-		"host:${remote_ip},\n",
-		"forwardedfor:${header:x-forwarded-for},\n",
-		"req:-,\n",
-		"status:${status},\n",
-		"method:${method},\n",
-		"uri:${uri},\n",
-		"size:${bytes_out},\n",
-		"referer:${referer},\n",
-		"ua:${user_agent},\n",
-		"reqtime_ns:${latency},\n",
-		"cache:-,\n",
-		"runtime:-,\n",
-		"apptime:-,\n",
-		"vhost:${host},\n",
-		"reqtime_human:${latency_human},\n",
-		"x-request-id:${id},\n",
-		"host:${host}\n",
-	}, "")
-
+	format := strings.Replace(middleware.DefaultLoggerConfig.Format, ",", ",\n  ", -1)
+	format = strings.Replace(format, "{", "{\n  ", 1)
+	format = strings.Replace(format, "}}", "}\n}", 1)
 	return format
 }
