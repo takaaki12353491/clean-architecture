@@ -59,6 +59,11 @@ func (it *OAuthInteractor) Callback(iCallback *inputdata.Callback) (*outputdata.
 		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
+	existingUser, _ := it.userRepository.FindByID(iCallback.User.ID)
+	if existingUser != nil {
+		log.WithFields(log.Fields{}).Infoln("The user already exists")
+		return it.outputport.Callback(existingUser), nil
+	}
 	user, err := model.NewUser(iCallback.User.ID, iCallback.User.Name)
 	if err != nil {
 		log.WithFields(log.Fields{}).Error(err)
