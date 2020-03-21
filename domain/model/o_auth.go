@@ -12,15 +12,13 @@ import (
 
 type OAuthState struct {
 	gorm.Model
-	State  string    `gorm:"column:state"`
-	Expiry time.Time `gorm:"column:expiry"`
+	State string `gorm:"column:state"`
 }
 
 func NewOAuthState() (*OAuthState, error) {
 	oauthState := &OAuthState{
-		Model:  gorm.Model{ID: uint(uuid.New().ID())},
-		State:  createRand(),
-		Expiry: time.Now().Add(10 * time.Minute),
+		Model: gorm.Model{ID: uint(uuid.New().ID())},
+		State: createRand(),
 	}
 	err := validator.Validate(oauthState)
 	if err != nil {
@@ -33,11 +31,11 @@ func NewOAuthState() (*OAuthState, error) {
 // OAuthToken is oauth token
 type OAuthToken struct {
 	UserID       uint
-	User         User      `gorm:"foreignkey:UserID"`
-	AccessToken  string    `gorm:"column:access_token"`
-	TokenType    string    `gorm:"column:token_type"`
-	RefreshToken string    `gorm:"column:refresh_token"`
-	Expiry       time.Time `gorm:"column:expiry"`
+	User         User
+	AccessToken  string
+	TokenType    string
+	RefreshToken string
+	Expiry       time.Time
 }
 
 func NewOAuthToken(user *User, token *oauth2.Token) (*OAuthToken, error) {
