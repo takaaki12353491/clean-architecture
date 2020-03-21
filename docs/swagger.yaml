@@ -1,0 +1,58 @@
+basePath: /
+definitions:
+  outputdata.Auth:
+    properties:
+      redirect_url:
+        type: string
+      state:
+        type: string
+    type: object
+  outputdata.Callback:
+    properties:
+      token:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a personal project
+  license:
+    name: takaaki12353491
+  title: CLN-ARCH API
+  version: "1.0"
+paths:
+  /auth/github/auth:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "307":
+          description: Temporary Redirect
+          schema:
+            $ref: '#/definitions/outputdata.Auth'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      tags:
+      - OAuth
+  /auth/github/callback:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/outputdata.Callback'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      tags:
+      - OAuth
+swagger: "2.0"
