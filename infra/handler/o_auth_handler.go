@@ -42,8 +42,7 @@ func (h *OAuthHandler) Auth(c *Context) error {
 		c.String(statusCode(err), err.Error())
 		return err
 	}
-	c.Response().Header().Set("Location", oAuth.URL)
-	return c.JSON(http.StatusTemporaryRedirect, oAuth)
+	return c.Redirect(http.StatusTemporaryRedirect, oAuth.URL)
 }
 
 // Callback ...
