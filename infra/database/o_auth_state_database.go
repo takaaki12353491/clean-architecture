@@ -33,7 +33,7 @@ func (db *OAuthStateDatabase) Store(state *model.OAuthState) error {
 }
 
 func (db *OAuthStateDatabase) Delete(state *model.OAuthState) error {
-	if err := db.sql.Delete(state).Error; err != nil {
+	if err := db.sql.Unscoped().Delete(state).Error; err != nil {
 		log.WithFields(log.Fields{}).Error(err)
 		return err
 	}
