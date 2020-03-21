@@ -4,17 +4,17 @@ import (
 	"cln-arch/validator"
 
 	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
 	"github.com/labstack/gommon/log"
 )
 
 type User struct {
-	ID string `gorm:"primary_key"`
+	*gorm.Model
 }
 
 func NewUser() (*User, error) {
-	user := &User{
-		ID: uuid.New().String(),
-	}
+	user := new(User)
+	user.ID = uint(uuid.New().ID())
 	err := validator.Validate(user)
 	if err != nil {
 		log.Error(err)

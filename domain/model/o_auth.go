@@ -5,24 +5,23 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
 type OAuthState struct {
-	ID     string     `gorm:"primary_key"`
+	*gorm.Model
 	State  string     `gorm:"column:state"`
 	Expiry *time.Time `gorm:"column:expiry"`
 }
 
 func NewOAuthState() (*OAuthState, error) {
-	state := createRand()
+	oauthState := new(OAuthState)
+	oauthState.ID = uint(uuid.New().ID())
+	oauthState.State = createRand()
 	expiry := time.Now().Add(10 * time.Minute)
-	oauthState := &OAuthState{
-		ID:     uuid.New().String(),
-		State:  state,
-		Expiry: &expiry,
-	}
+	oauthState.Expiry = &expiry
 	err := validator.Validate(oauthState)
 	if err != nil {
 		log.Error(err)
