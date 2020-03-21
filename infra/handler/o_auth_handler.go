@@ -21,7 +21,8 @@ func NewOAuthHandler() *OAuthHandler {
 			interactor.NewOAuthInteractor(
 				presenter.NewOAuthPresenter(),
 				database.NewUserDatabase(),
-				database.NewOAuthDatabase(),
+				database.NewOAuthStateDatabase(),
+				database.NewOAuthTokenDatabase(),
 			),
 		),
 	}
