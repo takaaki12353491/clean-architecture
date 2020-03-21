@@ -1,10 +1,7 @@
-basePath: /
 definitions:
   outputdata.Auth:
     properties:
       redirect_url:
-        type: string
-      state:
         type: string
     type: object
   outputdata.Callback:
