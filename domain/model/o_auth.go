@@ -4,6 +4,7 @@ import (
 	"cln-arch/validator"
 	"time"
 
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
@@ -18,6 +19,7 @@ func NewOAuthState() (*OAuthState, error) {
 	state := createRand()
 	expiry := time.Now().Add(10 * time.Minute)
 	oauthState := &OAuthState{
+		ID:     uuid.New().String(),
 		State:  state,
 		Expiry: &expiry,
 	}
