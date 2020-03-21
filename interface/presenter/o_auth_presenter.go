@@ -22,8 +22,10 @@ func (pre *OAuthPresenter) Auth(state *model.OAuthState) *outputdata.Auth {
 	}
 }
 
-func (pre *OAuthPresenter) Callback(token *model.OAuthToken) *outputdata.Callback {
+func (pre *OAuthPresenter) Callback(user *model.User) *outputdata.Callback {
 	return &outputdata.Callback{
-		Token: token.AccessToken,
+		ID:        user.ID,
+		Name:      user.Name,
+		AvatorURL: user.AvatorURL,
 	}
 }

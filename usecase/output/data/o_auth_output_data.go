@@ -2,9 +2,11 @@ package outputdata
 
 // Auth ...
 type Auth struct {
-	URL string `json:"redirect_url"`
+	URL string
 }
 
 type Callback struct {
-	Token string
+	ID        uint
+	Name      string
+	AvatorURL string
 }

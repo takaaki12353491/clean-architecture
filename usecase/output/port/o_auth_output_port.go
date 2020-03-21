@@ -7,5 +7,5 @@ import (
 
 type OAuthOutputPort interface {
 	Auth(*model.OAuthState) *outputdata.Auth
-	Callback(*model.OAuthToken) *outputdata.Callback
+	Callback(*model.User) *outputdata.Callback
 }
