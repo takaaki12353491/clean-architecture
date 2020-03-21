@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	*gorm.Model
+	gorm.Model
 }
 
 func NewUser() (*User, error) {

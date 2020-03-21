@@ -53,7 +53,7 @@ func (it *OAuthInteractor) Callback(iCallback *inputdata.Callback) (*outputdata.
 		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
-	if time.Now().After(*state.Expiry) {
+	if time.Now().After(state.Expiry) {
 		errMsg := "state is expiry"
 		log.WithFields(log.Fields{}).Error(errMsg)
 		return nil, errs.Forbidden.New(errMsg)
