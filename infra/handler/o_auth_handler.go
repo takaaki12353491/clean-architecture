@@ -20,6 +20,7 @@ func NewOAuthHandler() *OAuthHandler {
 		controller: controller.NewOAuthController(
 			interactor.NewOAuthInteractor(
 				presenter.NewOAuthPresenter(),
+				database.NewUserDatabase(),
 				database.NewOAuthDatabase(),
 			),
 		),
@@ -57,7 +58,7 @@ func (h *OAuthHandler) Auth(c *Context) error {
 func (h *OAuthHandler) Callback(c *Context) error {
 	request := &inputdata.CallbackRequest{}
 	c.Bind(request)
-	oCallback, err := h.controller.Callback(request)
+	oCallback, err := h.controller.Callback(c.Request().Context(), request)
 	if err != nil {
 		c.String(statusCode(err), err.Error())
 		return err

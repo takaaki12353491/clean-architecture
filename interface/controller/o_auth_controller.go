@@ -22,9 +22,9 @@ func (ct *OAuthController) Auth() (*outputdata.Auth, error) {
 	return ct.inputport.Auth()
 }
 
-func (ct *OAuthController) Callback(iCallbackRequest *inputdata.CallbackRequest) (*outputdata.Callback, error) {
+func (ct *OAuthController) Callback(context context.Context, iCallbackRequest *inputdata.CallbackRequest) (*outputdata.Callback, error) {
 	githubConf := config.NewGithubConf()
-	oauthToken, err := githubConf.Exchange(context.Background(), iCallbackRequest.Code)
+	oauthToken, err := githubConf.Exchange(context, iCallbackRequest.Code)
 	if err != nil {
 		log.Error(err)
 		return nil, err

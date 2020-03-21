@@ -2,7 +2,6 @@ package server
 
 import (
 	"cln-arch/infra/handler"
-	"os"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -15,6 +14,9 @@ func Start() {
 	e := echo.New()
 	// Middleware
 	e.Use(
+		middleware.LoggerWithConfig(middleware.LoggerConfig{
+			Format: logFormat(),
+		}),
 		middleware.Recover(),
 		func(h echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
@@ -23,10 +25,6 @@ func Start() {
 				})
 			}
 		},
-		middleware.LoggerWithConfig(middleware.LoggerConfig{
-			Format: logFormat(),
-			Output: os.Stdout,
-		}),
 	)
 
 	// Handlers
@@ -46,23 +44,23 @@ func logFormat() string {
 	// Refer to https://github.com/tkuchiki/alp
 	var format string
 	strings.Join([]string{
-		"time:${time_rfc3339}\t\n",
-		"host:${remote_ip}\t\n",
-		"forwardedfor:${header:x-forwarded-for}\t\n",
-		"req:-\t\n",
-		"status:${status}\t\n",
-		"method:${method}\t\n",
-		"uri:${uri}\t\n",
-		"size:${bytes_out}\t\n",
-		"referer:${referer}\t\n",
-		"ua:${user_agent}\t\n",
-		"reqtime_ns:${latency}\t\n",
-		"cache:-\t\n",
-		"runtime:-\t\n",
-		"apptime:-\t\n",
-		"vhost:${host}\t\n",
-		"reqtime_human:${latency_human}\t\n",
-		"x-request-id:${id}\t\n",
+		"time:${time_rfc3339},\n",
+		"host:${remote_ip},\n",
+		"forwardedfor:${header:x-forwarded-for},\n",
+		"req:-,\n",
+		"status:${status},\n",
+		"method:${method},\n",
+		"uri:${uri},\n",
+		"size:${bytes_out},\n",
+		"referer:${referer},\n",
+		"ua:${user_agent},\n",
+		"reqtime_ns:${latency},\n",
+		"cache:-,\n",
+		"runtime:-,\n",
+		"apptime:-,\n",
+		"vhost:${host},\n",
+		"reqtime_human:${latency_human},\n",
+		"x-request-id:${id},\n",
 		"host:${host}\n",
 	}, "")
 
