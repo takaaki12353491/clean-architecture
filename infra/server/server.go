@@ -34,7 +34,7 @@ func Start() {
 
 	auth := e.Group("/auth")
 	github := auth.Group("/github")
-	github.GET("/login", c(oauthHandler.Auth))
+	github.GET("/auth", c(oauthHandler.Auth))
 	github.GET("/callback", c(oauthHandler.Callback))
 
 	// Start server
