@@ -6,11 +6,11 @@ import (
 )
 
 type OAuthDatabase struct {
-	SQLHandler
+	*SQLHandler
 }
 
 func NewOAuthDatabase() repository.OAuthRepository {
-	return &OAuthDatabase{}
+	return &OAuthDatabase{SQLHandler: NewSQLHandler()}
 }
 
 func (db *OAuthDatabase) FindStateByState(state string) (*model.OAuthState, error) {

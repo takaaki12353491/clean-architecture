@@ -15,17 +15,17 @@ import (
 
 // OAuthInteractor is ...
 type OAuthInteractor struct {
-	oauthRepository repository.OAuthRepository
 	outputport      outputport.OAuthOutputPort
+	oauthRepository repository.OAuthRepository
 }
 
 func NewOAuthInteractor(
-	oauthRepository repository.OAuthRepository,
 	outputport outputport.OAuthOutputPort,
+	oauthRepository repository.OAuthRepository,
 ) inputport.OAuthInputPort {
 	return &OAuthInteractor{
-		oauthRepository: oauthRepository,
 		outputport:      outputport,
+		oauthRepository: oauthRepository,
 	}
 }
 

@@ -1,19 +1,29 @@
 package handler
 
 import (
+	"cln-arch/infra/database"
 	"cln-arch/interface/controller"
+	"cln-arch/interface/presenter"
 	inputdata "cln-arch/usecase/input/data"
+	"cln-arch/usecase/interactor"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type OAuthHandler struct {
-	controller controller.OAuthController
+	controller *controller.OAuthController
 }
 
 func NewOAuthHandler() *OAuthHandler {
-	return &OAuthHandler{}
+	return &OAuthHandler{
+		controller: controller.NewOAuthController(
+			interactor.NewOAuthInteractor(
+				presenter.NewOAuthPresenter(),
+				database.NewOAuthDatabase(),
+			),
+		),
+	}
 }
 
 // Auth ...
