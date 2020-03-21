@@ -17,11 +17,11 @@ CREATE TABLE `o_auth_states` (
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 ROW_FORMAT = DYNAMIC;
 
-DROP TABLE IF EXISTS `github_tokens`;
-CREATE TABLE `github_tokens` (
+DROP TABLE IF EXISTS `o_auth_tokens`;
+CREATE TABLE `o_auth_tokens` (
     `user_id` VARCHAR(36) PRIMARY KEY,
-    `token` VARCHAR(255) NOT NULL,
-    `type` VARCHAR(255) NOT NULL,
+    `access_token` VARCHAR(255) NOT NULL,
+    `token_type` VARCHAR(255) NOT NULL,
     `refresh_token` VARCHAR(255) NOT NULL,
     `expiry` DATETIME NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
