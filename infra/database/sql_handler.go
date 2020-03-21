@@ -1,6 +1,8 @@
 package database
 
 import (
+	"os"
+
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
@@ -11,10 +13,10 @@ type SQLHandler struct {
 
 func NewSQLHandler() *SQLHandler {
 	DBMS := "mysql"
-	USER := "root"
-	PASS := "####"
-	PROTOCOL := "tcp(##.###.##.###:3306)"
-	DBNAME := "##"
+	USER := os.Getenv("DB_USER")
+	PASS := os.Getenv("DB_PASS")
+	PROTOCOL := "tcp"
+	DBNAME := "cln_arch"
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
 	db, err := gorm.Open(DBMS, CONNECT)
 	if err != nil {
