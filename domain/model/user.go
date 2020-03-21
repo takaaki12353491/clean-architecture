@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	ID string
+	ID string `gorm:"primary_key"`
 }
 
 func NewUser() (*User, error) {

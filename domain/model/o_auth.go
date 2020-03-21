@@ -4,13 +4,12 @@ import (
 	"cln-arch/validator"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
 type OAuthState struct {
-	gorm.Model
+	ID     string     `gorm:"primary_key"`
 	State  string     `gorm:"column:state"`
 	Expiry *time.Time `gorm:"column:expiry"`
 }
@@ -32,12 +31,11 @@ func NewOAuthState() (*OAuthState, error) {
 
 // OAuthToken is oauth token
 type OAuthToken struct {
-	gorm.Model
 	User         *User
-	AccessToken  string     `gorm:"access_token"`
-	TokenType    string     `gorm:"token_type"`
-	RefreshToken string     `gorm:"refresh_token"`
-	Expiry       *time.Time `gorm:"expiry"`
+	AccessToken  string     `gorm:"column:access_token"`
+	TokenType    string     `gorm:"column:token_type"`
+	RefreshToken string     `gorm:"column:refresh_token"`
+	Expiry       *time.Time `gorm:"column:expiry"`
 }
 
 func NewOAuthToken(user *User, token *oauth2.Token) (*OAuthToken, error) {
