@@ -17,7 +17,7 @@ func NewOAuthStateDatabase() repository.OAuthStateRepository {
 
 func (db *OAuthStateDatabase) FindByState(str string) (*model.OAuthState, error) {
 	state := &model.OAuthState{}
-	if err := db.sql.First(state, "state = ?", state).Error; err != nil {
+	if err := db.sql.First(state, "state = ?", str).Error; err != nil {
 		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
