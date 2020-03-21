@@ -5,8 +5,7 @@ import (
 )
 
 type UserRepository interface {
-	FindByID(id string) (*model.User, error)
-	Create(user *model.User) error
-	Update(user *model.User) error
-	Delete(id string) error
+	FindByID(uint) (*model.User, error)
+	Store(*model.User) error
+	Update(*model.User) error
 }

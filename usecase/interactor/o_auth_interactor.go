@@ -16,15 +16,18 @@ import (
 // OAuthInteractor is ...
 type OAuthInteractor struct {
 	outputport      outputport.OAuthOutputPort
+	userRepository  repository.UserRepository
 	oauthRepository repository.OAuthRepository
 }
 
 func NewOAuthInteractor(
 	outputport outputport.OAuthOutputPort,
+	userRepository repository.UserRepository,
 	oauthRepository repository.OAuthRepository,
 ) inputport.OAuthInputPort {
 	return &OAuthInteractor{
 		outputport:      outputport,
+		userRepository:  userRepository,
 		oauthRepository: oauthRepository,
 	}
 }
@@ -56,6 +59,11 @@ func (it *OAuthInteractor) Callback(iCallback *inputdata.Callback) (*outputdata.
 		return nil, errs.Forbidden.New(errMsg)
 	}
 	user, err := model.NewUser()
+	if err != nil {
+		log.WithFields(log.Fields{}).Error(err)
+		return nil, err
+	}
+	err = it.userRepository.Store(user)
 	if err != nil {
 		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
