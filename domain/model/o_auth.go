@@ -17,10 +17,11 @@ type OAuthState struct {
 }
 
 func NewOAuthState() (*OAuthState, error) {
-	oauthState := new(OAuthState)
-	oauthState.ID = uint(uuid.New().ID())
-	oauthState.State = createRand()
-	oauthState.Expiry = time.Now().Add(10 * time.Minute)
+	oauthState := &OAuthState{
+		Model:  gorm.Model{ID: uint(uuid.New().ID())},
+		State:  createRand(),
+		Expiry: time.Now().Add(10 * time.Minute),
+	}
 	err := validator.Validate(oauthState)
 	if err != nil {
 		log.Error(err)
@@ -31,7 +32,8 @@ func NewOAuthState() (*OAuthState, error) {
 
 // OAuthToken is oauth token
 type OAuthToken struct {
-	User         User
+	UserID       uint
+	User         User      `gorm:"foreignkey:UserID"`
 	AccessToken  string    `gorm:"column:access_token"`
 	TokenType    string    `gorm:"column:token_type"`
 	RefreshToken string    `gorm:"column:refresh_token"`
@@ -40,6 +42,7 @@ type OAuthToken struct {
 
 func NewOAuthToken(user *User, token *oauth2.Token) (*OAuthToken, error) {
 	oauthToken := &OAuthToken{
+		UserID:       user.ID,
 		User:         *user,
 		AccessToken:  token.AccessToken,
 		TokenType:    token.TokenType,
