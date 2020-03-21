@@ -33,12 +33,12 @@ func NewOAuthInteractor(
 func (it *OAuthInteractor) Auth() (*outputdata.Auth, error) {
 	state, err := model.NewOAuthState()
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
 	err = it.oauthRepository.StoreState(state)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
 	return it.outputport.Auth(state), nil
@@ -47,27 +47,27 @@ func (it *OAuthInteractor) Auth() (*outputdata.Auth, error) {
 func (it *OAuthInteractor) Callback(iCallback *inputdata.Callback) (*outputdata.Callback, error) {
 	state, err := it.oauthRepository.FindStateByState(iCallback.Request.State)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
-	if state.Expiry.After(time.Now()) {
+	if time.Now().After(*state.Expiry) {
 		errMsg := "state is expiry"
-		log.Error(errMsg)
+		log.WithFields(log.Fields{}).Error(errMsg)
 		return nil, errs.Forbidden.New(errMsg)
 	}
 	user, err := model.NewUser()
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
 	token, err := model.NewOAuthToken(user, iCallback.OAuthToken)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
 	err = it.oauthRepository.StoreToken(token)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
 	return it.outputport.Callback(token), nil
