@@ -1,13 +1,13 @@
 package server
 
 import (
+	"cln-arch/infra/handler"
 	"os"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-
-	"cln-arch/infra/handler"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func Start() {
@@ -37,8 +37,9 @@ func Start() {
 	github.GET("/auth", c(oauthHandler.Auth))
 	github.GET("/callback", c(oauthHandler.Callback))
 
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Start server
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
 
 func logFormat() string {
