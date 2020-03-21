@@ -18,8 +18,7 @@ func (pre *OAuthPresenter) Auth(state *model.OAuthState) *outputdata.Auth {
 	oauthConfig := config.NewGithubConf()
 	url := oauthConfig.AuthCodeURL(state.State)
 	return &outputdata.Auth{
-		State: state.State,
-		URL:   url,
+		URL: url,
 	}
 }
 
