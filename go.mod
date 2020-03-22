@@ -12,7 +12,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang-migrate/migrate v3.5.4+incompatible // indirect
-	github.com/golang/mock v1.4.3 // indirect
+	github.com/golang/mock v1.4.3
 	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
