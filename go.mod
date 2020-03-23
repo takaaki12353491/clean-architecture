@@ -33,7 +33,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.6.2 // indirect
-	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/stretchr/testify v1.5.1
 	github.com/swaggo/echo-swagger v0.0.0-20200314082325-a612f9386b76
 	github.com/swaggo/swag v1.6.5
 	github.com/urfave/cli v1.22.3 // indirect
