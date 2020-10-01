@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.14.6
+    working_directory: /go/src/github.com/takaaki12353491/cln-arch
+    environment:
+      GO111MODULE: "on"
+    steps:
+      - checkout
+      - restore_cache:
+        name: Restore go modules cache
+        keys:
+          - v1-mod-{{ .Branch }}-{{ checksum "go.mod" }}
+      - run:
+        name: Vendoring
+        command: go mod download
+      - save_cache:
+        name: Save go modules cache
+        key: v1-mod-{{ .Branch }}-{{ checksum "go.mod" }}
+        paths:
+          - ~/go/pkg/mod/cache
+      - run:
+        name: Test go package
+        command: go test -v ./...
