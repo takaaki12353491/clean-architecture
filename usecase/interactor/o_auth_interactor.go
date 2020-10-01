@@ -49,7 +49,7 @@ func (it *OAuthInteractor) Auth() (*outputdata.Auth, error) {
 }
 
 func (it *OAuthInteractor) Callback(iCallback *inputdata.Callback) (*outputdata.Callback, error) {
-	state, err := it.stateRepository.FindByState(iCallback.Request.State)
+	state, err := it.stateRepository.FindByState(iCallback.State)
 	if err != nil {
 		log.WithFields(log.Fields{}).Error(err)
 		return nil, err

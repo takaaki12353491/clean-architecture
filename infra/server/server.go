@@ -1,7 +1,7 @@
 package server
 
 import (
-	"cln-arch/infra/handler"
+	"cln-arch/interface/controller"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -11,7 +11,7 @@ import (
 
 func Start() {
 	// Echo instance
-	e := echo.New()
+	e := NewEcho()
 	// Middleware
 	e.Use(
 		middleware.LoggerWithConfig(middleware.LoggerConfig{
@@ -20,20 +20,20 @@ func Start() {
 		middleware.Recover(),
 		func(h echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
-				return h(&handler.Context{
+				return h(&Context{
 					Context: c,
 				})
 			}
 		},
 	)
 
-	// Handlers
-	oauthHandler := handler.NewOAuthHandler()
+	// Controllers
+	oauthController := controller.NewOAuthController()
 
-	auth := e.Group("/auth")
-	github := auth.Group("/github")
-	github.GET("/auth", c(oauthHandler.Auth))
-	github.GET("/callback", c(oauthHandler.Callback))
+	auth := e.EchoGroup("/auth")
+	github := auth.EchoGroup("/github")
+	github.GET("/auth", oauthController.Auth)
+	github.GET("/callback", oauthController.Callback)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Start server

@@ -17,7 +17,8 @@ type GithubUser struct {
 }
 
 type Callback struct {
-	Request    *CallbackRequest
+	Code       string
+	State      string
 	User       *GithubUser
 	OAuthToken *oauth2.Token
 }

@@ -2,39 +2,84 @@ package controller
 
 import (
 	"cln-arch/config"
+	"cln-arch/infra/database"
+	"cln-arch/interface/presenter"
 	inputdata "cln-arch/usecase/input/data"
 	inputport "cln-arch/usecase/input/port"
-	outputdata "cln-arch/usecase/output/data"
-	"context"
+	"cln-arch/usecase/interactor"
+	"net/http"
 
 	"github.com/google/go-github/github"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
+// CallbackRequest is callback param after github login
+type CallbackRequest struct {
+	Code  string `json:"code"`
+	State string `json:"state"`
+}
+
 type OAuthController struct {
 	inputport inputport.OAuthInputPort
 }
 
-func NewOAuthController(inputport inputport.OAuthInputPort) *OAuthController {
-	return &OAuthController{inputport: inputport}
+func NewOAuthController() *OAuthController {
+	return &OAuthController{
+		inputport: interactor.NewOAuthInteractor(
+			presenter.NewOAuthPresenter(),
+			database.NewUserDatabase(),
+			database.NewOAuthStateDatabase(),
+			database.NewOAuthTokenDatabase(),
+		),
+	}
 }
 
-func (ct *OAuthController) Auth() (*outputdata.Auth, error) {
-	return ct.inputport.Auth()
-}
-
-func (ct *OAuthController) Callback(context context.Context, iCallbackRequest *inputdata.CallbackRequest) (*outputdata.Callback, error) {
-	githubConf := config.NewGithubConf()
-	token, err := githubConf.Exchange(context, iCallbackRequest.Code)
+// Auth ...
+// @summary
+// @description
+// @tags OAuth
+// @accept json
+// @produce json
+// @success 307 {object} outputdata.Auth ""
+// @failure 400 {string} string ""
+// @router /auth/github/auth [get]
+func (ctrl *OAuthController) Auth(c Context) error {
+	oAuth, err := ctrl.inputport.Auth()
 	if err != nil {
 		log.Error(err)
-		return nil, err
+		c.String(statusCode(err), err.Error())
+		return err
+	}
+	return c.Redirect(http.StatusTemporaryRedirect, oAuth.URL)
+}
+
+// Callback ...
+// @summary
+// @description
+// @tags OAuth
+// @accept json
+// @produce json
+// @success 200 {object} outputdata.Callback ""
+// @failure 400 {string} string ""
+// @router /auth/github/callback [get]
+func (ctrl *OAuthController) Callback(c Context) error {
+	request := &CallbackRequest{}
+	c.Bind(request)
+	githubConf := config.NewGithubConf()
+	context := c.CTX()
+	token, err := githubConf.Exchange(context, request.Code)
+	if err != nil {
+		log.Error(err)
+		c.String(statusCode(err), err.Error())
+		return err
 	}
 	client := github.NewClient(oauth2.NewClient(context, oauth2.StaticTokenSource(token)))
 	u, _, err := client.Users.Get(context, "")
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		c.String(statusCode(err), err.Error())
+		return err
 	}
 	iUser := &inputdata.GithubUser{
 		ID:        uint(u.GetID()),
@@ -42,9 +87,16 @@ func (ct *OAuthController) Callback(context context.Context, iCallbackRequest *i
 		AvatarURL: u.GetAvatarURL(),
 	}
 	iCallback := &inputdata.Callback{
-		Request:    iCallbackRequest,
+		Code:       request.Code,
+		State:      request.State,
 		User:       iUser,
 		OAuthToken: token,
 	}
-	return ct.inputport.Callback(iCallback)
+	oCallback, err := ctrl.inputport.Callback(iCallback)
+	if err != nil {
+		log.Error(err)
+		c.String(statusCode(err), err.Error())
+		return err
+	}
+	return c.JSON(http.StatusOK, oCallback)
 }

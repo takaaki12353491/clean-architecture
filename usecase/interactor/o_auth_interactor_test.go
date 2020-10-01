@@ -63,11 +63,11 @@ func TestCallback(t *testing.T) {
 	)
 
 	// state doesn't match
-	iRequest := &inputdata.CallbackRequest{Code: "code", State: "invalid state"}
 	iUser := &inputdata.GithubUser{ID: existingUser.ID, Name: existingUser.Name}
 	token := &oauth2.Token{}
 	iCallback := &inputdata.Callback{
-		Request:    iRequest,
+		Code:       "code",
+		State:      "invalid state",
 		User:       iUser,
 		OAuthToken: token,
 	}
@@ -76,11 +76,11 @@ func TestCallback(t *testing.T) {
 		t.Error("State doesn't match but processed successfully")
 	}
 	// state matches and user already exists
-	iRequest = &inputdata.CallbackRequest{Code: "code", State: existingState.State}
 	iUser = &inputdata.GithubUser{ID: existingUser.ID, Name: existingUser.Name}
 	token = &oauth2.Token{}
 	iCallback = &inputdata.Callback{
-		Request:    iRequest,
+		Code:       "code",
+		State:      existingState.State,
 		User:       iUser,
 		OAuthToken: token,
 	}
@@ -89,11 +89,11 @@ func TestCallback(t *testing.T) {
 		t.Error("User isn't recognized correctly")
 	}
 	// state matches and user doesn't exist
-	iRequest = &inputdata.CallbackRequest{Code: "code", State: existingState.State}
 	iUser = &inputdata.GithubUser{ID: newUser.ID, Name: newUser.Name}
 	token = &oauth2.Token{}
 	iCallback = &inputdata.Callback{
-		Request:    iRequest,
+		Code:       "code",
+		State:      existingState.State,
 		User:       iUser,
 		OAuthToken: token,
 	}
