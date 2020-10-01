@@ -4,7 +4,6 @@ import (
 	"cln-arch/interface/controller"
 	"strings"
 
-	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -18,13 +17,7 @@ func Start() {
 			Format: logFormat(),
 		}),
 		middleware.Recover(),
-		func(h echo.HandlerFunc) echo.HandlerFunc {
-			return func(c echo.Context) error {
-				return h(&Context{
-					Context: c,
-				})
-			}
-		},
+		wrapContext,
 	)
 
 	// Controllers
