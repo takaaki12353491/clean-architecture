@@ -67,15 +67,15 @@ func (ctrl *OAuthController) Callback(c Context) error {
 	request := &CallbackRequest{}
 	c.Bind(request)
 	githubConf := config.NewGithubConf()
-	context := c.CTX()
-	token, err := githubConf.Exchange(context, request.Code)
+	ctx := c.CTX()
+	token, err := githubConf.Exchange(ctx, request.Code)
 	if err != nil {
 		log.Error(err)
 		c.String(statusCode(err), err.Error())
 		return err
 	}
-	client := github.NewClient(oauth2.NewClient(context, oauth2.StaticTokenSource(token)))
-	u, _, err := client.Users.Get(context, "")
+	client := github.NewClient(oauth2.NewClient(ctx, oauth2.StaticTokenSource(token)))
+	u, _, err := client.Users.Get(ctx, "")
 	if err != nil {
 		log.Error(err)
 		c.String(statusCode(err), err.Error())
