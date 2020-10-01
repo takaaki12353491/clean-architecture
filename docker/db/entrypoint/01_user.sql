@@ -1,6 +1,6 @@
----drop---
+/* drop */
 DROP TABLE IF EXISTS `users`;
----create---
+/* create */
 CREATE TABLE `users` (
     `id` VARCHAR(36) PRIMARY KEY,
     `name` VARCHAR(64) NOT NULL,
