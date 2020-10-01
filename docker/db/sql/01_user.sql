@@ -1,8 +1,6 @@
-DROP DATABASE IF EXISTS `cln_arch`;
-CREATE DATABASE `cln_arch`;
-USE `cln_arch`;
-
+---drop---
 DROP TABLE IF EXISTS `users`;
+---create---
 CREATE TABLE `users` (
     `id` VARCHAR(36) PRIMARY KEY,
     `name` VARCHAR(64) NOT NULL,
