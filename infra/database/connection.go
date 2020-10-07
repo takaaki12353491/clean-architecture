@@ -7,11 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type SQLHandler struct {
-	*gorm.DB
-}
-
-func NewSQLHandler() *SQLHandler {
+func NewConnection() *gorm.DB {
 	DBMS := "mysql"
 	USER := os.Getenv("DB_USER")
 	PASS := os.Getenv("DB_PASS")
@@ -23,5 +19,5 @@ func NewSQLHandler() *SQLHandler {
 	if err != nil {
 		log.Panicln(err)
 	}
-	return &SQLHandler{DB: db}
+	return db
 }
