@@ -4,13 +4,15 @@ import (
 	"cln-arch/consts"
 	"cln-arch/errs"
 	"os"
+	"strings"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
 
 const (
-	domain = "http://localhost:8080"
+	domain    = "http://192.168.50.10:8080"
+	directory = "/oauth/callback"
 )
 
 func OAuthConfig(service string) (*oauth2.Config, error) {
@@ -27,18 +29,8 @@ func githubConfig() *oauth2.Config {
 	return &oauth2.Config{
 		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
-		RedirectURL:  "http://localhost:8080/auth/github/callback",
+		RedirectURL:  strings.Join([]string{domain, directory, "?service=github"}, ""),
 		Scopes:       scopes,
 		Endpoint:     github.Endpoint,
-	}
-}
-
-func twitterConfig() *oauth2.Config {
-	scopes := []string{"read:user"}
-	return &oauth2.Config{
-		ClientID:     os.Getenv("TWITTER_CLIENT_ID"),
-		ClientSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
-		RedirectURL:  "",
-		Scopes:       scopes,
 	}
 }
