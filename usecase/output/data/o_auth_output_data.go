@@ -2,7 +2,7 @@ package outputdata
 
 // Auth ...
 type Auth struct {
-	URL string
+	State string
 }
 
 type Callback struct {

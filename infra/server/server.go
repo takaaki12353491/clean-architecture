@@ -23,10 +23,9 @@ func Start() {
 	// Controllers
 	oauthController := controller.NewOAuthController()
 
-	auth := e.EchoGroup("/auth")
-	github := auth.EchoGroup("/github")
-	github.GET("/auth", oauthController.Auth)
-	github.GET("/callback", oauthController.Callback)
+	oauth := e.EchoGroup("/oauth")
+	oauth.POST("", oauthController.Auth)
+	oauth.GET("/callback", oauthController.Callback)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Start server

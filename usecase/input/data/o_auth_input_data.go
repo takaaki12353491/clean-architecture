@@ -10,7 +10,7 @@ type CallbackRequest struct {
 	State string `json:"state"`
 }
 
-type GithubUser struct {
+type User struct {
 	ID        uint
 	Name      string
 	AvatarURL string
@@ -19,6 +19,6 @@ type GithubUser struct {
 type Callback struct {
 	Code       string
 	State      string
-	User       *GithubUser
+	User       *User
 	OAuthToken *oauth2.Token
 }

@@ -12,6 +12,7 @@ const (
 	indexBit  = 6
 	indexMask = 1<<indexBit - 1
 	indexMax  = 63 / indexBit
+	serviceQP = "service"
 )
 
 func createRand() (randVal string) {

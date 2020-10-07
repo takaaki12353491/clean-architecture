@@ -37,3 +37,7 @@ func (eg *EchoGroup) EchoGroup(prefix string, m ...echo.MiddlewareFunc) *EchoGro
 func (eg *EchoGroup) GET(path string, cf ControllerFunc, m ...echo.MiddlewareFunc) *echo.Route {
 	return eg.Group.GET(path, c(cf), m...)
 }
+
+func (eg *EchoGroup) POST(path string, cf ControllerFunc, m ...echo.MiddlewareFunc) *echo.Route {
+	return eg.Group.POST(path, c(cf), m...)
+}

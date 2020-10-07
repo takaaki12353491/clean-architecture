@@ -1,7 +1,6 @@
 package presenter
 
 import (
-	"cln-arch/config"
 	"cln-arch/domain/model"
 	outputdata "cln-arch/usecase/output/data"
 	outputport "cln-arch/usecase/output/port"
@@ -15,10 +14,8 @@ func NewOAuthPresenter() outputport.OAuthOutputPort {
 }
 
 func (pre *OAuthPresenter) Auth(state *model.OAuthState) *outputdata.Auth {
-	oauthConfig := config.NewGithubConf()
-	url := oauthConfig.AuthCodeURL(state.State)
 	return &outputdata.Auth{
-		URL: url,
+		State: state.State,
 	}
 }
 
