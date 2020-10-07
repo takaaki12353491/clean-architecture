@@ -4,15 +4,16 @@ import (
 	"cln-arch/domain/model"
 	"cln-arch/usecase/repository"
 
+	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
 
 type UserDatabase struct {
-	*SQLHandler
+	*gorm.DB
 }
 
 func NewUserDatabase() repository.UserRepository {
-	return &UserDatabase{SQLHandler: NewSQLHandler()}
+	return &UserDatabase{NewConnection()}
 }
 
 func (db *UserDatabase) FindByID(id uint) (*model.User, error) {

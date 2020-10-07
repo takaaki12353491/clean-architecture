@@ -4,20 +4,21 @@ import (
 	"cln-arch/domain/model"
 	"cln-arch/usecase/repository"
 
+	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
 
 type OAuthStateDatabase struct {
-	sql *SQLHandler
+	*gorm.DB
 }
 
 func NewOAuthStateDatabase() repository.OAuthStateRepository {
-	return &OAuthStateDatabase{sql: NewSQLHandler()}
+	return &OAuthStateDatabase{NewConnection()}
 }
 
 func (db *OAuthStateDatabase) FindByState(str string) (*model.OAuthState, error) {
 	state := &model.OAuthState{}
-	if err := db.sql.First(state, "state = ?", str).Error; err != nil {
+	if err := db.First(state, "state = ?", str).Error; err != nil {
 		log.WithFields(log.Fields{}).Error(err)
 		return nil, err
 	}
@@ -25,7 +26,7 @@ func (db *OAuthStateDatabase) FindByState(str string) (*model.OAuthState, error)
 }
 
 func (db *OAuthStateDatabase) Store(state *model.OAuthState) error {
-	if err := db.sql.Create(state).Error; err != nil {
+	if err := db.Create(state).Error; err != nil {
 		log.WithFields(log.Fields{}).Error(err)
 		return err
 	}
@@ -33,7 +34,7 @@ func (db *OAuthStateDatabase) Store(state *model.OAuthState) error {
 }
 
 func (db *OAuthStateDatabase) Delete(state *model.OAuthState) error {
-	if err := db.sql.Unscoped().Delete(state).Error; err != nil {
+	if err := db.Unscoped().Delete(state).Error; err != nil {
 		log.WithFields(log.Fields{}).Error(err)
 		return err
 	}
