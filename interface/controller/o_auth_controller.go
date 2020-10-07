@@ -4,7 +4,7 @@ import (
 	"cln-arch/config"
 	"cln-arch/consts"
 	"cln-arch/errs"
-	"cln-arch/infra/database"
+	"cln-arch/interface/database"
 	"cln-arch/interface/presenter"
 	inputdata "cln-arch/usecase/input/data"
 	inputport "cln-arch/usecase/input/port"
