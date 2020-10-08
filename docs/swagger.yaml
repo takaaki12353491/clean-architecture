@@ -23,7 +23,7 @@ info:
   version: "1.0"
 paths:
   /oauth:
-    post:
+    get:
       consumes:
       - application/json
       parameters:

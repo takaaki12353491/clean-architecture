@@ -28,7 +28,7 @@ var doc = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/oauth": {
-            "post": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],

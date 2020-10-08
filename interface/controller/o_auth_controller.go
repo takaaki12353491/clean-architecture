@@ -47,9 +47,14 @@ func NewOAuthController() *OAuthController {
 // @param service query string true "github"
 // @success 307 {object} outputdata.Auth ""
 // @failure 400 {string} string ""
-// @router /oauth [post]
+// @router /oauth [get]
 func (ctrl *OAuthController) Auth(c Context) error {
 	oAuth, err := ctrl.inputport.Auth()
+	if err != nil {
+		log.Error(err)
+		c.String(statusCode(err), err.Error())
+		return err
+	}
 	service := c.QueryParam(serviceQP)
 	oauthConfig, err := config.OAuthConfig(service)
 	if err != nil {

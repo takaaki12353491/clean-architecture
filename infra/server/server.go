@@ -27,7 +27,7 @@ func Start() {
 	oauthController := controller.NewOAuthController()
 
 	oauth := e.EchoGroup("/oauth")
-	oauth.POST("", oauthController.Auth)
+	oauth.GET("", oauthController.Auth)
 	oauth.GET("/callback", oauthController.Callback)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)

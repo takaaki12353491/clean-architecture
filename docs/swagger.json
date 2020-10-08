@@ -12,7 +12,7 @@
     "host": "192.168.50.10:8080",
     "paths": {
         "/oauth": {
-            "post": {
+            "get": {
                 "consumes": [
                     "application/json"
                 ],
