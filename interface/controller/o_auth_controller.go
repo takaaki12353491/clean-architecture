@@ -44,6 +44,7 @@ func NewOAuthController() *OAuthController {
 // @tags OAuth
 // @accept json
 // @produce json
+// @param service query string true "github"
 // @success 307 {object} outputdata.Auth ""
 // @failure 400 {string} string ""
 // @router /oauth [post]

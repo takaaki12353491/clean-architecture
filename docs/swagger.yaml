@@ -1,15 +1,19 @@
 definitions:
   outputdata.Auth:
     properties:
-      redirect_url:
+      state:
         type: string
     type: object
   outputdata.Callback:
     properties:
-      token:
+      avatorURL:
+        type: string
+      id:
+        type: integer
+      name:
         type: string
     type: object
-host: localhost:8080
+host: 192.168.50.10:8080
 info:
   contact: {}
   description: This is a personal project
@@ -18,10 +22,16 @@ info:
   title: CLN-ARCH API
   version: "1.0"
 paths:
-  /auth/github/auth:
-    get:
+  /oauth:
+    post:
       consumes:
       - application/json
+      parameters:
+      - description: github
+        in: query
+        name: service
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -35,7 +45,7 @@ paths:
             type: string
       tags:
       - OAuth
-  /auth/github/callback:
+  /oauth/callback:
     get:
       consumes:
       - application/json

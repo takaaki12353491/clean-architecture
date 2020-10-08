@@ -16,6 +16,9 @@ func Start() {
 		middleware.LoggerWithConfig(middleware.LoggerConfig{
 			Format: logFormat(),
 		}),
+		middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins: []string{"http://localhost:3000"},
+		}),
 		middleware.Recover(),
 		wrapContext,
 	)

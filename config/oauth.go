@@ -20,7 +20,7 @@ func OAuthConfig(service string) (*oauth2.Config, error) {
 	case consts.Github:
 		return githubConfig(), nil
 	default:
-		return nil, errs.Invalidated.New("invalid service")
+		return nil, errs.Invalidated.New(service + "is available")
 	}
 }
 

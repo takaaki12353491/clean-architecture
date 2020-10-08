@@ -9,10 +9,10 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "192.168.50.10:8080",
     "paths": {
-        "/auth/github/auth": {
-            "get": {
+        "/oauth": {
+            "post": {
                 "consumes": [
                     "application/json"
                 ],
@@ -21,6 +21,15 @@
                 ],
                 "tags": [
                     "OAuth"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "github",
+                        "name": "service",
+                        "in": "query",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "307": {
@@ -38,7 +47,7 @@
                 }
             }
         },
-        "/auth/github/callback": {
+        "/oauth/callback": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -70,7 +79,7 @@
         "outputdata.Auth": {
             "type": "object",
             "properties": {
-                "redirect_url": {
+                "state": {
                     "type": "string"
                 }
             }
@@ -78,7 +87,13 @@
         "outputdata.Callback": {
             "type": "object",
             "properties": {
-                "token": {
+                "avatorURL": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }
